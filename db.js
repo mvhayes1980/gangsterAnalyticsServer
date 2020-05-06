@@ -1,14 +1,13 @@
 require('dotenv').config();
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize(process.env.NAME, 'postgres', process.env.PASS, {
-    host: 'localhost',
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres'
 });
 
 sequelize.authenticate().then(
     function(){
-        console.log('Connected to Gangster Analytics database');
+        console.log(`You've been MADE`);
     },
     function(err){
         console.log(err);

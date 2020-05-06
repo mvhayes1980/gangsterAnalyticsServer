@@ -21,7 +21,7 @@ const validateSession = (req, res, next) => {
         } else {
             req.errors = err;
             console.log(err);
-            return res.status(401).send('Not authorized')
+            return res.status(401).send('Not Authorized')
         }
     })
 
