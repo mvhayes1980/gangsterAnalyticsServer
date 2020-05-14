@@ -103,7 +103,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         owner: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false
         }
 

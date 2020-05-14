@@ -64,7 +64,8 @@ router.put('/update/:id', validateSession, (req, res) => {
 router.delete('/delete/:id', validateSession, (req, res) => {
     Log.destroy({
       where:{
-        id: req.params.id
+        id: req.params.id,
+        owner: req.user.id
       }
     })
     .then(log => res.status(200).json(log))
