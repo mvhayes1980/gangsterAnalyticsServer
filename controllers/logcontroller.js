@@ -1,19 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const Log = require('../db').import('../models/log');
-const validateSession = require('../middleware/validate-session');
+const Log = require('../db').import('../models/log');               // imports use of Sequelize to interact with my log model
+const validateSession = require('../middleware/validate-session');  // incorporates use of validateSession
 
-router.get('/getall', (req, res) => {
-    Log.findAll()
-    .then(log => res.status(200).json(log))
-    .catch(err => res.status(500).json({
+router.get('/getall', validateSession, (req, res) => {              // here validateSession offered as parameter to get request, though the request
+    Log.findAll()                                                   // is declared as req but never read...only its headers are checked to make sure
+    .then(log => res.status(200).json(log))                         // User is authorized. Here on line 8, if the request is successful, return log in json.
+    .catch(err => res.status(500).json({                            // Otherwise, throw 500 to user and include jsonified error message in console
         error:err
     }))
 })
 
-router.post('/createlog', validateSession, (req, res) => {   
-    const logFromRequest = {
-        firstName: req.body.firstName,
+router.post('/createlog', validateSession, (req, res) => {   // here validateSession used as parameter, checking to authorize if User is allowed access to the function
+    const logFromRequest = {                                 // parameter called after it, which takes the user's log request and allows a key-value pairing for each
+        firstName: req.body.firstName,                       // DataType in the log model to the data in the body of the request.
         middleName: req.body.middleName,
         lastName: req.body.lastName,
         mainImage: req.body.mainImage,
@@ -47,7 +47,7 @@ router.post('/createlog', validateSession, (req, res) => {
 })
 
 
-router.get('/getone/:id', (req, res) => {
+router.get('/getone/:id', validateSession, (req, res) => {
     Log.findOne({ where: { description: req.params.id }})
       .then(log => res.status(200).json(log))
       .catch(err => res.status(500).json({ error: err}))
