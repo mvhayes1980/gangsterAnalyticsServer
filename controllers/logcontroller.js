@@ -4,7 +4,11 @@ const Log = require('../db').import('../models/log');               // imports u
 const validateSession = require('../middleware/validate-session');  // incorporates use of validateSession
 
 router.get('/getall', validateSession, (req, res) => {              // here validateSession offered as parameter to get request, though the request
-    Log.findAll()                                                   // is declared as req but never read...only its headers are checked to make sure
+    Log.findAll({
+      where: {
+        owner: req.user.id
+      }
+    })                                                   // is declared as req but never read...only its headers are checked to make sure
     .then(log => res.status(200).json(log))                         // User is authorized. Here on line 8, if the request is successful, return log in json.
     .catch(err => res.status(500).json({                            // Otherwise, throw 500 to user and include jsonified error message in console
         error:err
@@ -48,13 +52,13 @@ router.post('/createlog', validateSession, (req, res) => {   // here validateSes
 
 
 router.get('/getone/:id', validateSession, (req, res) => {
-    Log.findOne({ where: { description: req.params.id }})
+    Log.findOne({ where: { id: req.params.id }})
       .then(log => res.status(200).json(log))
       .catch(err => res.status(500).json({ error: err}))
   })
 
 router.put('/update/:id', validateSession, (req, res) => {
-    Log.update(req.body, { where: { id: req.params.id }})
+    Log.update(req.body, { where: { id: req.params.id, owner: req.user.id }})
       .then(log => res.status(200).json(log))
       .catch(err => res.json({
         error: err
