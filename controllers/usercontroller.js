@@ -4,7 +4,8 @@ const User = require('../db').import('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-router.post('/create', (req, res) => {    // Here we have the controller linking up with the Model via the import on line 3.
+router.post('/create', (req, res) => {  
+    console.log("Pre-creation");          // Here we have the controller linking up with the Model via the import on line 3.
     User.create({                         // take the post request at the '/create' endpoint and from the incoming post request,
         firstName: req.body.firstName,    // take User Model and insert value from User's request body for each key in Model.
         lastName: req.body.lastName,
@@ -12,6 +13,7 @@ router.post('/create', (req, res) => {    // Here we have the controller linking
         password: bcrypt.hashSync(req.body.password, 13) //  uses bcryptjs to salt the password 13 times and enter as value into password key.
    })
    .then(user => {
+       console.log('User ID:', user.id);
        let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1d'}); // then, taking the User object created above,
        res.status(200).json({                               // declare let token and at user.id assign jsonwebtoken to the id key created.
            userResponse: user,                              // Return 200 response and json in which user is actually created and, if client
